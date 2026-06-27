@@ -1,0 +1,11 @@
+{
+  "name": "kanji-map",
+  "private": true,
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "dev:types": "pnpm --filter @kanji/shared-types build",
+    "test:web": "pnpm --filter web test",
+    "test:e2e": "pnpm --filter web test:e2e"
+  }
+}
