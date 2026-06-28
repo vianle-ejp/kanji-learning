@@ -1,6 +1,9 @@
 import json
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
+
+from app.config import get_settings
 
 
 class SeedService:
@@ -19,3 +22,9 @@ class SeedService:
         file_path = self.seed_dir / filename
         with file_path.open("r", encoding="utf-8") as seed_file:
             return json.load(seed_file)
+
+
+@lru_cache
+def get_seed_service() -> SeedService:
+    settings = get_settings()
+    return SeedService(seed_dir=settings.data_dir / "seed")
