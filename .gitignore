@@ -1,10 +1,30 @@
+# Node / pnpm
 node_modules/
 .pnpm-store/
+pnpm-debug.log*
+
+# Next.js / frontend build artifacts
 .next/
+out/
 dist/
+coverage/
+playwright-report/
+test-results/
+
+# Python / uv / pytest
 .venv/
 .pytest_cache/
 __pycache__/
 *.pyc
+.python-version
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# OS / editor noise
 .DS_Store
+
+# Local data artifacts
 data/app.db
