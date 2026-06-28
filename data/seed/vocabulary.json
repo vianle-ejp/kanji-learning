@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "writing": "完全",
+    "reading": "かんぜん",
+    "meaning": "complete; perfect",
+    "han_viet": "hoan toan",
+    "level": "N3",
+    "notes": "Useful anchor word connecting the seed kanji."
+  },
+  {
+    "id": 2,
+    "writing": "安全",
+    "reading": "あんぜん",
+    "meaning": "safe; secure",
+    "han_viet": "an toan",
+    "level": "N4",
+    "notes": "Provides a second relation for 全."
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "vocabulary_id": 1,
+    "japanese_sentence": "準備は完全です。",
+    "reading": "じゅんびはかんぜんです。",
+    "meaning_vi": "Su chuan bi da hoan toan."
+  },
+  {
+    "id": 2,
+    "vocabulary_id": 2,
+    "japanese_sentence": "ここは安全です。",
+    "reading": "ここはあんぜんです。",
+    "meaning_vi": "Noi nay an toan."
+  }
+]

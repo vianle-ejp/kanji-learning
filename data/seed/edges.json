@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "source_type": "kanji",
+    "source_id": 1,
+    "target_type": "vocabulary",
+    "target_id": 1,
+    "relation_type": "appears_in",
+    "weight": 1.0,
+    "note": "完 appears in 完全."
+  },
+  {
+    "id": 2,
+    "source_type": "kanji",
+    "source_id": 2,
+    "target_type": "vocabulary",
+    "target_id": 1,
+    "relation_type": "appears_in",
+    "weight": 1.0,
+    "note": "全 appears in 完全."
+  },
+  {
+    "id": 3,
+    "source_type": "kanji",
+    "source_id": 2,
+    "target_type": "vocabulary",
+    "target_id": 2,
+    "relation_type": "appears_in",
+    "weight": 0.8,
+    "note": "全 appears in 安全."
+  }
+]
