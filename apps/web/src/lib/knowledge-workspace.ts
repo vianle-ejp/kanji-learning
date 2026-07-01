@@ -22,7 +22,7 @@ export interface KnowledgeWorkspaceViewModel {
 
 export const rowOverrides: Record<
   string,
-  Omit<RelationshipRow, "id" | "kanji">
+  Omit<RelationshipRow, "id" | "kanji" | "gloss">
 > = {
   "安全": {
     hiragana: "あんぜん",
