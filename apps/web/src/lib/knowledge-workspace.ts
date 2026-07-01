@@ -50,14 +50,10 @@ export const rowOverrides: Record<
   },
 };
 
-function findRootNode(graph: GraphResponse): GraphNode | undefined {
-  return graph.nodes.find((node) => node.type === "kanji") ?? graph.nodes[0];
-}
-
 export function buildKnowledgeWorkspaceViewModel(
   graph: GraphResponse,
 ): KnowledgeWorkspaceViewModel {
-  const rootNode = findRootNode(graph);
+  const rootNode = graph.nodes[0];
 
   if (!rootNode) {
     return {
