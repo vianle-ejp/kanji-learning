@@ -32,9 +32,9 @@ export const rowOverrides: Record<
   },
   "全部": {
     hiragana: "ぜんぶ",
-    romaji: "zenbu",
+    romaji: "zen'bu",
     hanViet: "toan bo",
-    exampleSentence: "全部食べてもいいですか。",
+    exampleSentence: "ケーキを全部食べた。",
   },
   "完全": {
     hiragana: "かんぜん",

@@ -2,8 +2,10 @@ import React from "react";
 
 import { KnowledgeWorkspace } from "@/components/workspace/knowledge-workspace";
 import { buildKnowledgeWorkspaceViewModel } from "@/lib/knowledge-workspace";
-import type { GraphResponse } from "@/lib/types";
 import { render, screen } from "@testing-library/react";
+import { within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import type { GraphResponse } from "@/lib/types";
 
 const graphFixture: GraphResponse = {
   nodes: [
@@ -179,14 +181,31 @@ describe("KnowledgeWorkspace", () => {
 
   it("renders the workspace contract for the root kanji and related vocabulary rows", () => {
     render(<KnowledgeWorkspace graph={graphFixture} />);
+    const inspector = screen.getByText("Inspector").closest("aside");
 
     expect(
       screen.getByPlaceholderText("Search notes, kanji, readings..."),
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "全" })).toBeTruthy();
-    expect(screen.getByText("あんぜん")).toBeTruthy();
-    expect(screen.getByText("an'zen")).toBeTruthy();
+    expect(inspector).toBeTruthy();
+    expect(within(inspector as HTMLElement).getByText("あんぜん")).toBeTruthy();
+    expect(within(inspector as HTMLElement).getByText("an'zen")).toBeTruthy();
     expect(screen.getAllByText("Hán Việt:").length).toBeGreaterThan(0);
-    expect(screen.getByText("この道は安全です。")).toBeTruthy();
+    expect(within(inspector as HTMLElement).getByText("この道は安全です。")).toBeTruthy();
+  });
+
+  it("updates the inspector when a relationship row is selected", async () => {
+    const user = userEvent.setup();
+
+    render(<KnowledgeWorkspace graph={graphFixture} />);
+
+    const inspector = screen.getByText("Inspector").closest("aside");
+
+    await user.click(screen.getByRole("button", { name: /全部/ }));
+
+    expect(inspector).toBeTruthy();
+    expect(within(inspector as HTMLElement).getByText("全部")).toBeTruthy();
+    expect(within(inspector as HTMLElement).getByText("zen'bu")).toBeTruthy();
+    expect(within(inspector as HTMLElement).getByText("ケーキを全部食べた。")).toBeTruthy();
   });
 });

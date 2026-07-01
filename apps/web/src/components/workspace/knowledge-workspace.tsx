@@ -1,5 +1,11 @@
-import React from "react";
+"use client";
 
+import React, { useState } from "react";
+
+import { FocusStrip } from "@/components/workspace/focus-strip";
+import { RelationshipList } from "@/components/workspace/relationship-list";
+import { SearchSidebar } from "@/components/workspace/search-sidebar";
+import { StudyInspector } from "@/components/workspace/study-inspector";
 import type { GraphResponse } from "@/lib/types";
 import { buildKnowledgeWorkspaceViewModel } from "@/lib/knowledge-workspace";
 
@@ -9,28 +15,27 @@ interface KnowledgeWorkspaceProps {
 
 export function KnowledgeWorkspace({ graph }: KnowledgeWorkspaceProps) {
   const viewModel = buildKnowledgeWorkspaceViewModel(graph);
+  const [activeRowId, setActiveRowId] = useState<string | null>(
+    viewModel.rows[0]?.id ?? null,
+  );
+  const activeRow =
+    viewModel.rows.find((row) => row.id === activeRowId) ?? viewModel.rows[0] ?? null;
 
   return (
-    <section>
-      <input
-        aria-label="Search workspace"
-        placeholder="Search notes, kanji, readings..."
-        type="search"
+    <section className="mx-auto flex min-h-screen max-w-7xl flex-col gap-6 px-6 py-10 lg:px-8">
+      <FocusStrip
+        root={viewModel.root}
+        totalRelationships={viewModel.rows.length}
       />
-      <h1>{viewModel.root.kanji}</h1>
-      <ul>
-        {viewModel.rows.map((row) => (
-          <li key={row.id}>
-            <h2>{row.kanji}</h2>
-            <p>{row.hiragana}</p>
-            <p>{row.romaji}</p>
-            <p>
-              <span>Hán Việt:</span> <span>{row.hanViet}</span>
-            </p>
-            <p>{row.exampleSentence}</p>
-          </li>
-        ))}
-      </ul>
+      <div className="grid gap-6 lg:grid-cols-[0.85fr_1.1fr_0.9fr]">
+        <SearchSidebar root={viewModel.root} />
+        <RelationshipList
+          activeRowId={activeRow?.id ?? null}
+          onSelect={setActiveRowId}
+          rows={viewModel.rows}
+        />
+        <StudyInspector row={activeRow} />
+      </div>
     </section>
   );
 }
