@@ -1,11 +1,18 @@
 import React from "react";
 
 import { KnowledgeWorkspace } from "@/components/workspace/knowledge-workspace";
+import { getKanjiGraph } from "@/lib/api";
 import { buildKnowledgeWorkspaceViewModel } from "@/lib/knowledge-workspace";
 import { render, screen } from "@testing-library/react";
 import { within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { GraphResponse } from "@/lib/types";
+import { afterEach, vi } from "vitest";
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
+});
 
 const graphFixture: GraphResponse = {
   nodes: [
@@ -247,6 +254,20 @@ describe("KnowledgeWorkspace", () => {
     expect(within(inspector as HTMLElement).getByText("an'zen")).toBeTruthy();
     expect(screen.getAllByText("Hán Việt:").length).toBeGreaterThan(0);
     expect(within(inspector as HTMLElement).getByText("この道は安全です。")).toBeTruthy();
+  });
+
+  it("renders all approved study rows from fallback data", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
+
+    const graph = await getKanjiGraph("全");
+
+    render(<KnowledgeWorkspace graph={graph} />);
+
+    expect(screen.getByRole("heading", { name: "全" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /安全/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /全部/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /完全/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /全国/ })).toBeTruthy();
   });
 
   it("updates the inspector when a relationship row is selected", async () => {
