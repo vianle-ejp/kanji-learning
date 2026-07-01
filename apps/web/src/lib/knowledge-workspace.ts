@@ -57,7 +57,7 @@ export const rowOverrides: Record<
   },
   "完全": {
     hiragana: "かんぜん",
-    romaji: "kanzen",
+    romaji: "kan'zen",
     hanViet: "hoan toan",
     exampleSentence: "計画は完全ではありません。",
   },

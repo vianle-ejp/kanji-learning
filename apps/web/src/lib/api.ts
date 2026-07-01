@@ -154,7 +154,7 @@ export async function getKanjiGraph(character: string): Promise<GraphResponse> {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to load graph for ${character}`);
+      return buildMinimalFallbackGraph(character);
     }
 
     return (await response.json()) as GraphResponse;

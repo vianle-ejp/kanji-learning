@@ -25,7 +25,6 @@ export function SearchSidebar({ root }: SearchSidebarProps) {
             aria-label="Search workspace"
             className="w-full rounded-full border border-moss/15 bg-paper/70 px-4 py-3 text-sm text-ink outline-none placeholder:text-ink/45 focus:border-persimmon/40"
             placeholder="Search notes, kanji, readings... (coming soon)"
-            readOnly
             type="search"
           />
         </label>

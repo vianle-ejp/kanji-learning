@@ -242,18 +242,46 @@ describe("KnowledgeWorkspace", () => {
   it("renders the workspace contract for the root kanji and related vocabulary rows", () => {
     render(<KnowledgeWorkspace graph={graphFixture} />);
     const inspector = screen.getByText("Inspector").closest("aside");
+    const relationshipList = screen.getByRole("heading", {
+      name: "Vocabulary links",
+    }).closest("section");
 
     expect(
       screen.getByPlaceholderText(/Search notes, kanji, readings/),
     ).toBeTruthy();
-    expect(screen.getByRole("searchbox").getAttribute("readonly")).not.toBeNull();
+    expect(screen.getByRole("searchbox").getAttribute("readonly")).toBeNull();
     expect(screen.getByText("Search is coming soon")).toBeTruthy();
     expect(screen.getByRole("heading", { name: "全" })).toBeTruthy();
+    expect(relationshipList).toBeTruthy();
+    expect(within(relationshipList as HTMLElement).getAllByText("Hán Việt").length).toBeGreaterThan(
+      0,
+    );
+    expect(within(relationshipList as HTMLElement).getAllByText("Ví dụ").length).toBeGreaterThan(
+      0,
+    );
+    expect(
+      within(relationshipList as HTMLElement).getByText("an toan"),
+    ).toBeTruthy();
+    expect(
+      within(relationshipList as HTMLElement).getByText("この道は安全です。"),
+    ).toBeTruthy();
     expect(inspector).toBeTruthy();
     expect(within(inspector as HTMLElement).getByText("あんぜん")).toBeTruthy();
     expect(within(inspector as HTMLElement).getByText("an'zen")).toBeTruthy();
     expect(screen.getAllByText("Hán Việt:").length).toBeGreaterThan(0);
     expect(within(inspector as HTMLElement).getByText("この道は安全です。")).toBeTruthy();
+  });
+
+  it("keeps the workspace search input editable", async () => {
+    const user = userEvent.setup();
+
+    render(<KnowledgeWorkspace graph={graphFixture} />);
+
+    const searchInput = screen.getByRole("searchbox");
+
+    await user.type(searchInput, "安全");
+
+    expect((searchInput as HTMLInputElement).value).toBe("安全");
   });
 
   it("renders all approved study rows from fallback data", async () => {
@@ -294,6 +322,38 @@ describe("KnowledgeWorkspace", () => {
             type: "kanji",
             id: "fallback-kanji-火",
             label: "火",
+            shortMeaning: "",
+            hiragana: "",
+            hanViet: "",
+          },
+        },
+      ],
+      edges: [],
+    });
+  });
+
+  it("returns a minimal root-only graph for non-ok API responses", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: false,
+      }),
+    );
+
+    const graph = await getKanjiGraph("全");
+
+    expect(graph).toEqual({
+      nodes: [
+        {
+          id: "fallback-kanji-全",
+          type: "kanji",
+          label: "全",
+          x: 0,
+          y: 0,
+          tooltip: {
+            type: "kanji",
+            id: "fallback-kanji-全",
+            label: "全",
             shortMeaning: "",
             hiragana: "",
             hanViet: "",
@@ -363,7 +423,7 @@ describe("KnowledgeWorkspace", () => {
 
     expect(inspector).toBeTruthy();
     expect(within(inspector as HTMLElement).getByText("完全")).toBeTruthy();
-    expect(within(inspector as HTMLElement).getByText("kanzen")).toBeTruthy();
+    expect(within(inspector as HTMLElement).getByText("kan'zen")).toBeTruthy();
     expect(
       within(inspector as HTMLElement).getByText("計画は完全ではありません。"),
     ).toBeTruthy();

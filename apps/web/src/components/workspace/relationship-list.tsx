@@ -47,6 +47,20 @@ export function RelationshipList({
                   <p className="text-sm text-ink/60">{row.romaji}</p>
                 </div>
                 <p className="mt-3 text-sm leading-7 text-ink/75">{row.gloss}</p>
+                <dl className="mt-4 grid gap-3 text-sm text-ink/70 sm:grid-cols-2">
+                  <div>
+                    <dt className="text-[11px] uppercase tracking-[0.18em] text-moss">
+                      Hán Việt
+                    </dt>
+                    <dd className="mt-1">{row.hanViet}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[11px] uppercase tracking-[0.18em] text-moss">
+                      Ví dụ
+                    </dt>
+                    <dd className="mt-1 leading-6">{row.exampleSentence}</dd>
+                  </div>
+                </dl>
               </button>
             </li>
           );
