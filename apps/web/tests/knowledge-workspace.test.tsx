@@ -262,12 +262,46 @@ describe("KnowledgeWorkspace", () => {
     const graph = await getKanjiGraph("全");
 
     render(<KnowledgeWorkspace graph={graph} />);
+    const inspector = screen.getByText("Inspector").closest("aside");
 
     expect(screen.getByRole("heading", { name: "全" })).toBeTruthy();
     expect(screen.getByRole("button", { name: /安全/ })).toBeTruthy();
     expect(screen.getByRole("button", { name: /全部/ })).toBeTruthy();
     expect(screen.getByRole("button", { name: /完全/ })).toBeTruthy();
     expect(screen.getByRole("button", { name: /全国/ })).toBeTruthy();
+    expect(inspector).toBeTruthy();
+    expect(within(inspector as HTMLElement).getByText("安全")).toBeTruthy();
+    expect(within(inspector as HTMLElement).getByText("an'zen")).toBeTruthy();
+    expect(
+      within(inspector as HTMLElement).getByText("この道は安全です。"),
+    ).toBeTruthy();
+  });
+
+  it("returns a minimal fallback graph rooted on the requested non-default kanji", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
+
+    const graph = await getKanjiGraph("火");
+
+    expect(graph).toEqual({
+      nodes: [
+        {
+          id: "fallback-kanji-火",
+          type: "kanji",
+          label: "火",
+          x: 0,
+          y: 0,
+          tooltip: {
+            type: "kanji",
+            id: "fallback-kanji-火",
+            label: "火",
+            shortMeaning: "",
+            hiragana: "",
+            hanViet: "",
+          },
+        },
+      ],
+      edges: [],
+    });
   });
 
   it("updates the inspector when a relationship row is selected", async () => {

@@ -2,7 +2,7 @@ import type { GraphResponse } from "@/lib/types";
 
 const DEFAULT_API_BASE_URL = "http://127.0.0.1:8000";
 
-const fallbackGraph: GraphResponse = {
+const fallbackGraphForZen: GraphResponse = {
   nodes: [
     {
       id: "kanji-2",
@@ -112,6 +112,39 @@ const fallbackGraph: GraphResponse = {
   ],
 };
 
+function buildMinimalFallbackGraph(character: string): GraphResponse {
+  const fallbackId = `fallback-kanji-${character}`;
+
+  return {
+    nodes: [
+      {
+        id: fallbackId,
+        type: "kanji",
+        label: character,
+        x: 0,
+        y: 0,
+        tooltip: {
+          type: "kanji",
+          id: fallbackId,
+          label: character,
+          shortMeaning: "",
+          hiragana: "",
+          hanViet: "",
+        },
+      },
+    ],
+    edges: [],
+  };
+}
+
+function getFallbackGraph(character: string): GraphResponse {
+  if (character === "全") {
+    return fallbackGraphForZen;
+  }
+
+  return buildMinimalFallbackGraph(character);
+}
+
 export async function getKanjiGraph(character: string): Promise<GraphResponse> {
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? DEFAULT_API_BASE_URL;
 
@@ -126,6 +159,6 @@ export async function getKanjiGraph(character: string): Promise<GraphResponse> {
 
     return (await response.json()) as GraphResponse;
   } catch {
-    return fallbackGraph;
+    return getFallbackGraph(character);
   }
 }
