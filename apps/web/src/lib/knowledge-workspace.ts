@@ -3,6 +3,7 @@ import type { GraphNode, GraphResponse } from "@/lib/types";
 export interface RelationshipRow {
   id: string;
   kanji: string;
+  gloss: string;
   hiragana: string;
   romaji: string;
   hanViet: string;
@@ -11,8 +12,10 @@ export interface RelationshipRow {
 
 export interface KnowledgeWorkspaceViewModel {
   root: {
-    id: string;
-    label: string;
+    kanji: string;
+    gloss: string;
+    hiragana: string;
+    hanViet: string;
   };
   rows: RelationshipRow[];
 }
@@ -59,8 +62,10 @@ export function buildKnowledgeWorkspaceViewModel(
   if (!rootNode) {
     return {
       root: {
-        id: "",
-        label: "",
+        kanji: "",
+        gloss: "",
+        hiragana: "",
+        hanViet: "",
       },
       rows: [],
     };
@@ -77,6 +82,7 @@ export function buildKnowledgeWorkspaceViewModel(
       return {
         id: node.id,
         kanji: node.label,
+        gloss: node.tooltip?.shortMeaning ?? "",
         hiragana: override?.hiragana ?? node.tooltip?.hiragana ?? "",
         romaji: override?.romaji ?? "",
         hanViet: override?.hanViet ?? node.tooltip?.hanViet ?? "",
@@ -86,8 +92,10 @@ export function buildKnowledgeWorkspaceViewModel(
 
   return {
     root: {
-      id: rootNode.id,
-      label: rootNode.label,
+      kanji: rootNode.label,
+      gloss: rootNode.tooltip?.shortMeaning ?? "",
+      hiragana: rootNode.tooltip?.hiragana ?? "",
+      hanViet: rootNode.tooltip?.hanViet ?? "",
     },
     rows,
   };

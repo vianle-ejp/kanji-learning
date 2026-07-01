@@ -17,7 +17,7 @@ export function KnowledgeWorkspace({ graph }: KnowledgeWorkspaceProps) {
         placeholder="Search notes, kanji, readings..."
         type="search"
       />
-      <h1>{viewModel.root.label}</h1>
+      <h1>{viewModel.root.kanji}</h1>
       <ul>
         {viewModel.rows.map((row) => (
           <li key={row.id}>
