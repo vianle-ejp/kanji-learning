@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { FocusStrip } from "@/components/workspace/focus-strip";
 import { RelationshipList } from "@/components/workspace/relationship-list";
@@ -18,6 +18,12 @@ export function KnowledgeWorkspace({ graph }: KnowledgeWorkspaceProps) {
   const [activeRowId, setActiveRowId] = useState<string | null>(
     viewModel.rows[0]?.id ?? null,
   );
+  const rowIdsKey = viewModel.rows.map((row) => row.id).join("|");
+
+  useEffect(() => {
+    setActiveRowId(viewModel.rows[0]?.id ?? null);
+  }, [rowIdsKey]);
+
   const activeRow =
     viewModel.rows.find((row) => row.id === activeRowId) ?? viewModel.rows[0] ?? null;
 

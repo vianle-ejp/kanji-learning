@@ -93,7 +93,60 @@ describe("KnowledgeWorkspace", () => {
     });
   });
 
-  it("uses the first graph node as the root even when another kanji appears later", () => {
+  it("prefers the semantic source node as the root when graph edges identify one", () => {
+    const viewModel = buildKnowledgeWorkspaceViewModel({
+      nodes: [
+        {
+          id: "vocabulary-4",
+          type: "vocabulary",
+          label: "前方",
+          x: 0,
+          y: 0,
+          tooltip: {
+            type: "vocabulary",
+            id: "4",
+            label: "前方",
+            shortMeaning: "ahead; front",
+            hiragana: "ぜんぽう",
+            hanViet: "tien phuong",
+          },
+        },
+        {
+          id: "kanji-2",
+          type: "kanji",
+          label: "全",
+          x: 1,
+          y: 0,
+          tooltip: {
+            type: "kanji",
+            id: "2",
+            label: "全",
+            shortMeaning: "whole; all",
+            hiragana: "ぜん",
+            hanViet: "toan",
+          },
+        },
+      ],
+      edges: [
+        {
+          id: "4",
+          source: "kanji-2",
+          target: "vocabulary-4",
+          relationType: "appears_in",
+          weight: 1,
+        },
+      ],
+    });
+
+    expect(viewModel.root).toEqual({
+      kanji: "全",
+      gloss: "whole; all",
+      hiragana: "ぜん",
+      hanViet: "toan",
+    });
+  });
+
+  it("falls back to the first graph node only when the graph has no semantic root", () => {
     const viewModel = buildKnowledgeWorkspaceViewModel({
       nodes: [
         {
@@ -184,8 +237,10 @@ describe("KnowledgeWorkspace", () => {
     const inspector = screen.getByText("Inspector").closest("aside");
 
     expect(
-      screen.getByPlaceholderText("Search notes, kanji, readings..."),
+      screen.getByPlaceholderText(/Search notes, kanji, readings/),
     ).toBeTruthy();
+    expect(screen.getByRole("searchbox").getAttribute("readonly")).not.toBeNull();
+    expect(screen.getByText("Search is coming soon")).toBeTruthy();
     expect(screen.getByRole("heading", { name: "全" })).toBeTruthy();
     expect(inspector).toBeTruthy();
     expect(within(inspector as HTMLElement).getByText("あんぜん")).toBeTruthy();
@@ -207,5 +262,63 @@ describe("KnowledgeWorkspace", () => {
     expect(within(inspector as HTMLElement).getByText("全部")).toBeTruthy();
     expect(within(inspector as HTMLElement).getByText("zen'bu")).toBeTruthy();
     expect(within(inspector as HTMLElement).getByText("ケーキを全部食べた。")).toBeTruthy();
+  });
+
+  it("resets the active inspector row when the graph rows change", async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(<KnowledgeWorkspace graph={graphFixture} />);
+
+    await user.click(screen.getByRole("button", { name: /全部/ }));
+
+    rerender(
+      <KnowledgeWorkspace
+        graph={{
+          nodes: [
+            graphFixture.nodes[0],
+            {
+              id: "vocabulary-6",
+              type: "vocabulary",
+              label: "完全",
+              x: 2,
+              y: 1,
+              tooltip: {
+                type: "vocabulary",
+                id: "6",
+                label: "完全",
+                shortMeaning: "complete; perfect",
+                hiragana: "かんぜん",
+                hanViet: "hoan toan",
+              },
+            },
+          ],
+          edges: [
+            {
+              id: "6",
+              source: "kanji-2",
+              target: "vocabulary-6",
+              relationType: "appears_in",
+              weight: 1,
+            },
+          ],
+        }}
+      />,
+    );
+
+    const inspector = screen.getByText("Inspector").closest("aside");
+
+    expect(inspector).toBeTruthy();
+    expect(within(inspector as HTMLElement).getByText("完全")).toBeTruthy();
+    expect(within(inspector as HTMLElement).getByText("kanzen")).toBeTruthy();
+    expect(
+      within(inspector as HTMLElement).getByText("計画は完全ではありません。"),
+    ).toBeTruthy();
+
+    rerender(<KnowledgeWorkspace graph={graphFixture} />);
+
+    expect(within(inspector as HTMLElement).getByText("安全")).toBeTruthy();
+    expect(within(inspector as HTMLElement).getByText("an'zen")).toBeTruthy();
+    expect(
+      within(inspector as HTMLElement).getByText("この道は安全です。"),
+    ).toBeTruthy();
   });
 });

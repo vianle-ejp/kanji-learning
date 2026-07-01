@@ -20,6 +20,25 @@ export interface KnowledgeWorkspaceViewModel {
   rows: RelationshipRow[];
 }
 
+function getWorkspaceRootNode(graph: GraphResponse): GraphNode | undefined {
+  if (graph.edges.length > 0) {
+    const incomingTargets = new Set(graph.edges.map((edge) => edge.target));
+    const semanticRootIds = Array.from(
+      new Set(
+        graph.edges
+          .map((edge) => edge.source)
+          .filter((sourceId) => !incomingTargets.has(sourceId)),
+      ),
+    );
+
+    if (semanticRootIds.length === 1) {
+      return graph.nodes.find((node) => node.id === semanticRootIds[0]);
+    }
+  }
+
+  return graph.nodes[0];
+}
+
 export const rowOverrides: Record<
   string,
   Omit<RelationshipRow, "id" | "kanji" | "gloss">
@@ -53,7 +72,7 @@ export const rowOverrides: Record<
 export function buildKnowledgeWorkspaceViewModel(
   graph: GraphResponse,
 ): KnowledgeWorkspaceViewModel {
-  const rootNode = graph.nodes[0];
+  const rootNode = getWorkspaceRootNode(graph);
 
   if (!rootNode) {
     return {

@@ -24,10 +24,14 @@ export function SearchSidebar({ root }: SearchSidebarProps) {
           <input
             aria-label="Search workspace"
             className="w-full rounded-full border border-moss/15 bg-paper/70 px-4 py-3 text-sm text-ink outline-none placeholder:text-ink/45 focus:border-persimmon/40"
-            placeholder="Search notes, kanji, readings..."
+            placeholder="Search notes, kanji, readings... (coming soon)"
+            readOnly
             type="search"
           />
         </label>
+        <p className="text-xs uppercase tracking-[0.18em] text-ink/50">
+          Search is coming soon
+        </p>
 
         <dl className="grid gap-3 rounded-[1.5rem] bg-paper/70 p-4 text-sm text-ink/75">
           <div>
